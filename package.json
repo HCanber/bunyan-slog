@@ -1,11 +1,20 @@
 {
-  "name": "bunyan-serilog",
-  "version": "0.1.0",
+  "name": "bunyan-slog",
+  "version": "0.1.0-pre002",
   "description": "Extends bunyan logger with ability to format messages in serilog style",
-  "main": "index.js",
+  "main": "bunyan-slog.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "lab --verbose --sourcemaps",
+    "test-cov-html": "lab -r html -o coverage.html --sourcemaps",
+    "test-full": "lab -t 100 --sourcemaps"
   },
-  "author": "Håkan Canberger",
-  "license": "ISC"
+  "author": "HÃ¥kan Canberger",
+  "license": "ISC",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "bunyan": "^1.5.1",
+    "lab": "^5.18.1",
+    "should": "^7.1.0"
+  }
 }
