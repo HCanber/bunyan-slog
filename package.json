@@ -1,0 +1,11 @@
+{
+  "name": "bunyan-serilog",
+  "version": "0.1.0",
+  "description": "Extends bunyan logger with ability to format messages in serilog style",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Håkan Canberger",
+  "license": "ISC"
+}
