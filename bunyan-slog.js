@@ -19,7 +19,7 @@ function objCopy(obj) {
 var formatRegExp = /(\{@?\w+})|(%[sdj%])/g;
 
 function init(bunyan) {
-	bunyan = bunyan || require('bunyan')
+	bunyan = bunyan || _getDefaultBunyan()
 	function format(fields, messageTemplate, args, startIndex, options) {
 		var i = startIndex;
 		var len = args.length;
@@ -202,5 +202,28 @@ function fmt(strings) {
 	result.msg = message.join('')
 	return result
 }
+
+var _defaultInit;
+function _callDefault(fnName, args) {
+	_defaultInit = _defaultInit || init()
+	return _defaultInit[fnName].apply(_defaultInit, args)
+}
+
+var _defaultBunyan;
+function _getDefaultBunyan() {
+	return _defaultBunyan = _defaultBunyan || require('bunyan')
+}
+init.wrapExisting = function () { return _callDefault('wrapExisting', arguments) }
+init.createLogger = function () { return _callDefault('createLogger', arguments) }
+init.stdSerializers = _getDefaultBunyan().stdSerializers
+init.TRACE = _getDefaultBunyan().TRACE
+init.DEBUG = _getDefaultBunyan().DEBUG
+init.INFO = _getDefaultBunyan().INFO
+init.ERROR = _getDefaultBunyan().ERROR
+init.FATAL = _getDefaultBunyan().FATAL
+init.resolveLevel = _getDefaultBunyan().resolveLevel
+init.safeCycles = _getDefaultBunyan().safeCycles
 init.fmt = fmt
+init.bunyan = _getDefaultBunyan()
+
 module.exports = init;
