@@ -132,6 +132,9 @@ function init(bunyan) {
 		return logger;
 	}
 	function createLogger(optionalBunyanLoggerOptions, optionalBunyanSlogOptions) {
+		if(typeof optionalBunyanLoggerOptions==='string'){
+			optionalBunyanLoggerOptions={name:optionalBunyanLoggerOptions}
+		}
 		var log = bunyan.createLogger(optionalBunyanLoggerOptions);
 		return wrap(log, optionalBunyanSlogOptions);
 	}

@@ -27,5 +27,12 @@ suite('Creating', () => {
 		done()
 	})
 
+	test('Can create with just name', done => {
+		var log = bunyanSlog.createLogger('test')
+		log.info().should.be.true()
+		done()
+	})
+
+
 })
 
