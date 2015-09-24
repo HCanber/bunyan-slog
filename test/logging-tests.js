@@ -152,6 +152,47 @@ suite('Logging', () => {
 			done()
 		})
 	})
+	
+	
+	
+	suite('Non-destructor', () => {
+		test('Formats int correctly', done => {
+			testLevels('{Int}', 123, rec =>
+				rec.msg.should.eql('123')
+				)
+			done()
+		})
+
+		test('Formats string as a string', done => {
+			testLevels('{String}', 'abc', rec =>
+				rec.msg.should.eql('abc')
+				)
+			done()
+		})
+
+		test('Formats bool as true and false', done => {
+			testLevels('{True} {False}', true, false, rec =>
+				rec.msg.should.eql('true false')
+				)
+			done()
+		})
+
+		test('object without toString is formatted using standard toString', done => {
+			testLevels('{obj}', { s: '1', o: { i: 4 } }, rec =>
+				rec.msg.should.eql('[object Object]')
+				)
+			done()
+		})
+
+
+		test('object with toString is formatted using standard toString', done => {
+			testLevels('{obj}', { s: '1', o: { i: 4 }, toString: ()=>"from toString" }, rec =>
+				rec.msg.should.eql('from toString')
+				)
+			done()
+		})
+	})
+	
 	suite('Normal formatting', () => {
 		test('Handles strings', done => {
 			testLevels('%s', 42, rec =>
@@ -183,6 +224,7 @@ suite('Logging', () => {
 			done()
 		})
 	})
+
 
 	suite("Appends fields", () => {
 		test('Fields are appended with correct names and values', done => {
