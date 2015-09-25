@@ -248,9 +248,10 @@ suite('Logging', () => {
 
 	suite("Combinations", () => {
 		test('When combining slog with normal formatting its handled correctly', done => {
-			testLevels('{Number} %s {@Object} %d', 42, "4711", { i: 17 }, 11, rec =>
+			testLevels('{Number} %s {@Object} %d', 42, "4711", { i: 17 }, 11, rec =>{
 				rec.msg.should.eql('42 4711 {"i":17} 11')
-				)
+				rec.messageTemplate.should.eql('{Number} 4711 {@Object} 11')
+				})
 			done()
 		})
 	})

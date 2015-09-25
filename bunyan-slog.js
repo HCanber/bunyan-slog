@@ -58,7 +58,12 @@ function init(bunyan) {
 			formattedMessage = [formattedMessage].concat(_copyArguments(args, i)).join(' ')
 		}
 		if (messageTemplateField) {
-			fields[messageTemplateField] = messageTemplateArgs.length > 0 ? util.format(messageTemplate, messageTemplateArgs) : messageTemplate
+			if(messageTemplateArgs.length>0){
+				messageTemplateArgs.unshift(messageTemplate)
+				fields[messageTemplateField] = util.format.apply(this,messageTemplateArgs)
+			} else {
+				fields[messageTemplateField] = messageTemplate
+			}
 		}
 		return formattedMessage;
 	}
