@@ -52,6 +52,15 @@ suite('Logging', () => {
 			assertBlock(rec, level)
 		})
 	}
+	suite('debug replacement support', () => {
+		test('the debug api works', done => {
+			log('Test %d',42)
+			var rec = lastRecord()
+			rec.should.have.property('msg', 'Test 42')
+			rec.should.have.property('level', logLevels.debug)
+			done()		
+		})
+	})
 
 	suite('Bunyan standard API', () => {
 

@@ -178,6 +178,23 @@ log.info({foo: 'bar'}, 'Hi {uid} %s', userId, userName)
 //Logs: 'Hi 4711 Dude' and sets the property foo:'bar'
 ```
 
+#### Using as a replacement for debug
+__bunyan-slog__ is compatible with the [debug](https://www.npmjs.com/package/debug) syntax.
+
+So this code
+
+``` javascript
+var debug = require('debug')('subsystem')
+debug('The user %d logged on', uid)
+```
+
+can be replaced by this 
+
+``` javascript
+var debug = require('bunyan-slog')('subsystem')
+debug('The user %d logged on', uid)
+```
+
 ## API - Creating loggers
 ### createLogger
 `bunyanSlog.createLogger('logName')`

@@ -19,6 +19,11 @@ function objCopy(obj) {
 var formatRegExp = /(\{@?\w+})|(%[sdj%])/g;
 
 function init(bunyan) {
+	if (typeof bunyan === 'string') {
+		var name = bunyan
+		bunyan = _getDefaultBunyan()
+		return createLogger(name)
+	}
 	bunyan = bunyan || _getDefaultBunyan()
 	function format(fields, messageTemplate, args, startIndex, options) {
 		var i = startIndex;
@@ -125,16 +130,17 @@ function init(bunyan) {
 			}
 			return log
 		}
+		var newLogger = wrapLogMethod(logger.debug)
 
-		logger.trace = wrapLogMethod(logger.trace);
-		logger.debug = wrapLogMethod(logger.debug);
-		logger.info = wrapLogMethod(logger.info);
-		logger.warn = wrapLogMethod(logger.warn);
-		logger.error = wrapLogMethod(logger.error);
-		logger.fatal = wrapLogMethod(logger.fatal);
-
-		logger.fmt = fmt
-		return logger;
+		newLogger.trace = wrapLogMethod(logger.trace);
+		newLogger.debug = wrapLogMethod(logger.debug);
+		newLogger.info = wrapLogMethod(logger.info);
+		newLogger.warn = wrapLogMethod(logger.warn);
+		newLogger.error = wrapLogMethod(logger.error);
+		newLogger.fatal = wrapLogMethod(logger.fatal);
+		newLogger.fmt = fmt
+		newLogger.__proto__ = logger
+		return newLogger;
 	}
 	function createLogger(optionalBunyanLoggerOptions, optionalBunyanSlogOptions) {
 		if (typeof optionalBunyanLoggerOptions === 'string') {
@@ -194,8 +200,8 @@ function fmt(strings) {
 				if (index >= 0) {
 					message.push(s.substr(0, index + 1))
 				}
-				if(valueName.startsWith('@')){
-					valueName=valueName.substr(1)
+				if (valueName.startsWith('@')) {
+					valueName = valueName.substr(1)
 				}
 				if (lastChar === ':') {
 					message.push(valueName, ':')
@@ -206,7 +212,7 @@ function fmt(strings) {
 			}
 		}
 		if (lastChar === '@') {
-			message.push(s.substr(0, sLength - 1), stringify(v) )
+			message.push(s.substr(0, sLength - 1), stringify(v))
 			wasHandled = true
 		}
 		if (!wasHandled) message.push(s, v)
@@ -217,7 +223,7 @@ function fmt(strings) {
 	result.msg = message.join('')
 	return result
 }
-function stringify(value){
+function stringify(value) {
 	return JSON.stringify(value, safeCycles())
 }
 // A JSON stringifier that handles cycles safely.
@@ -246,6 +252,7 @@ var _defaultBunyan;
 function _getDefaultBunyan() {
 	return _defaultBunyan = _defaultBunyan || require('bunyan')
 }
+
 init.wrapExisting = function () { return _callDefault('wrapExisting', arguments) }
 init.createLogger = function () { return _callDefault('createLogger', arguments) }
 init.stdSerializers = _getDefaultBunyan().stdSerializers
