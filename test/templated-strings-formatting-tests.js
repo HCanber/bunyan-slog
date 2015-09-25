@@ -55,5 +55,27 @@ suite('Reformatting', () => {
 		done()
 	})
 
+
+	test('Destructs value without name prefix', done => {
+		(fmt`@${{id:42}}`).should.eql({ msg: '{"id":42}', values: [] })
+		done()
+	})
+
+	test('Destructs embedded value without name prefix', done => {
+		(fmt`abc @${{id:42}} def`).should.eql({ msg: 'abc {"id":42} def', values: [] })
+		done()
+	})
+
+
+	test('Destructs embedded value with name prefix, name included', done => {
+		(fmt`abc @id:${{id:42}} def`).should.eql({ msg: 'abc id:{id} def', values: [{id:42}] })
+		done()
+	})
+
+	test('Destructs embedded value with name prefix, name excluded', done => {
+		(fmt`abc @id=${{id:42}} def`).should.eql({ msg: 'abc {id} def', values: [{id:42}] })
+		done()
+	})
+
 })
 

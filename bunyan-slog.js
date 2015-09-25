@@ -58,9 +58,9 @@ function init(bunyan) {
 			formattedMessage = [formattedMessage].concat(_copyArguments(args, i)).join(' ')
 		}
 		if (messageTemplateField) {
-			if(messageTemplateArgs.length>0){
+			if (messageTemplateArgs.length > 0) {
 				messageTemplateArgs.unshift(messageTemplate)
-				fields[messageTemplateField] = util.format.apply(this,messageTemplateArgs)
+				fields[messageTemplateField] = util.format.apply(this, messageTemplateArgs)
 			} else {
 				fields[messageTemplateField] = messageTemplate
 			}
@@ -137,8 +137,8 @@ function init(bunyan) {
 		return logger;
 	}
 	function createLogger(optionalBunyanLoggerOptions, optionalBunyanSlogOptions) {
-		if(typeof optionalBunyanLoggerOptions==='string'){
-			optionalBunyanLoggerOptions={name:optionalBunyanLoggerOptions}
+		if (typeof optionalBunyanLoggerOptions === 'string') {
+			optionalBunyanLoggerOptions = { name: optionalBunyanLoggerOptions }
 		}
 		var log = bunyan.createLogger(optionalBunyanLoggerOptions);
 		return wrap(log, optionalBunyanSlogOptions);
@@ -187,12 +187,15 @@ function fmt(strings) {
 				var code = s.charCodeAt(index);
 			} while (index >= 0 &&
 				((code > 47 && code < 58) || // numeric (0-9)
-					(code > 64 && code < 91) || // upper alpha (A-Z)
+					(code >= 64 && code < 91) || // @ and upper alpha (A-Z)
 					(code > 96 && code < 123)))  // lower alpha (a-z))
 			var valueName = s.substring(index + 1, sLength - 1)
 			if (valueName.length > 0) {
 				if (index >= 0) {
 					message.push(s.substr(0, index + 1))
+				}
+				if(valueName.startsWith('@')){
+					valueName=valueName.substr(1)
 				}
 				if (lastChar === ':') {
 					message.push(valueName, ':')
@@ -202,6 +205,10 @@ function fmt(strings) {
 				wasHandled = true
 			}
 		}
+		if (lastChar === '@') {
+			message.push(s.substr(0, sLength - 1), stringify(v) )
+			wasHandled = true
+		}
 		if (!wasHandled) message.push(s, v)
 	}
 	for (; i <= strings.length; i++) {
@@ -209,6 +216,24 @@ function fmt(strings) {
 	}
 	result.msg = message.join('')
 	return result
+}
+function stringify(value){
+	return JSON.stringify(value, safeCycles())
+}
+// A JSON stringifier that handles cycles safely.
+// Usage: JSON.stringify(obj, safeCycles())
+function safeCycles() {
+	var seen = [];
+	return function (key, val) {
+		if (!val || typeof (val) !== 'object') {
+			return val;
+		}
+		if (seen.indexOf(val) !== -1) {
+			return '[Circular]';
+		}
+		seen.push(val);
+		return val;
+	};
 }
 
 var _defaultInit;
