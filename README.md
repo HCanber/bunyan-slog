@@ -50,7 +50,7 @@ log.info('Processed {@position} in {elapsed} ms.', pos, elapsedMs'
 
 This will log a bunyan message with the following fields:
 
-```json
+```javascript
 {
   "msg": "Processed {lat:25,lon:134} in 34 ms.",
   "position": { 
@@ -179,7 +179,7 @@ log.info({foo: 'bar'}, 'Hi {uid} %s', userId, userName)
 ```
 
 #### Using as a replacement for debug
-__bunyan-slog__ is compatible with the [debug](https://www.npmjs.com/package/debug) syntax.
+__bunyan-slog__ is compatible with the [debug](https://www.npmjs.com/package/debug) npm package syntax.
 
 So this code
 
@@ -196,11 +196,14 @@ debug('The user %d logged on', uid)
 ```
 
 ## API - Creating loggers
-### createLogger
-`bunyanSlog.createLogger('logName')`
-`bunyanSlog.createLogger({name:'logName'})`
-`bunyanSlog.createLogger(bunyanOptions)`
-`bunyanSlog.createLogger(bunyanOptions, options)`
+### createLogger()
+
+``` javascript
+bunyanSlog.createLogger('logName')
+bunyanSlog.createLogger({name:'logName'})
+bunyanSlog.createLogger(bunyanOptions)
+bunyanSlog.createLogger(bunyanOptions, options)
+```
 
 |argument | description |
 |:----- |:------- |
