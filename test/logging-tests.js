@@ -83,6 +83,13 @@ suite('Logging', () => {
 			done()
 		})
 
+		test('info("%s %s", null, undefined) (and similar) handles null and undefined correctly', done => {
+			testLevels('%s %s', null, undefined, rec=>
+				rec.should.have.property('msg', 'null undefined')
+				)
+			done()
+		})
+
 		test('info({foo: "bar"}, "hi") (and similar) should log', done => {
 
 			testLevels({ foo: "bar" }, "hi", rec=> {
@@ -160,6 +167,14 @@ suite('Logging', () => {
 				)
 			done()
 		})
+		
+		test('handles null and undefined correctly', done => {
+			testLevels('{@nullValue} {@undefinedValue}', null, undefined, rec=>
+				rec.msg.should.eql('null undefined')
+				)
+			done()
+		})
+
 	})
 	
 	
@@ -237,19 +252,23 @@ suite('Logging', () => {
 
 	suite("Appends fields", () => {
 		test('Fields are appended with correct names and values', done => {
-			testLevels('{Number} {String} {Object}', 42, "4711", { i: 17 }, rec => {
+			testLevels('{Number} {String} {Object} {Null} {Undefined}', 42, "4711", { i: 17 }, null, undefined, rec => {
 				rec.should.have.property('Number').eql(42)
 				rec.should.have.property('String').eql("4711")
 				rec.should.have.property('Object').eql({ i: 17 })
+				rec.should.have.property('Null').eql(null)
+				rec.should.have.property('Undefined').eql(undefined)
 			})
 			done()
 		})
 
 		test('Destructed Fields are appended with correct names and values', done => {
-			testLevels('{@Number} {@String} {@Object}', 42, "4711", { i: 17 }, rec => {
+			testLevels('{@Number} {@String} {@Object} {@Null} {@Undefined}', 42, "4711", { i: 17 }, null, undefined, rec => {
 				rec.should.have.property('Number').eql(42)
 				rec.should.have.property('String').eql("4711")
 				rec.should.have.property('Object').eql({ i: 17 })
+				rec.should.have.property('Null').eql(null)
+				rec.should.have.property('Undefined').eql(undefined)
 			})
 			done()
 		})

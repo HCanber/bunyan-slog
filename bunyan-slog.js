@@ -51,7 +51,10 @@ function init(bunyan) {
 					name = v.substr(2, v.length - 3);
 				}
 				else {
-					formattedValue = value.toString();
+					formattedValue = 
+						value === null ? 'null' 
+						: typeof value === 'undefined' ? 'undefined'
+						: value.toString();
 					name = v.substr(1, v.length - 2);
 				}
 				fields[name] = objCopy(value);
