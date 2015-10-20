@@ -51,10 +51,10 @@ function init(bunyan) {
 					name = v.substr(2, v.length - 3);
 				}
 				else {
-					formattedValue = 
-						value === null ? 'null' 
+					formattedValue =
+					value === null ? 'null'
 						: typeof value === 'undefined' ? 'undefined'
-						: value.toString();
+							: value.toString();
 					name = v.substr(1, v.length - 2);
 				}
 				fields[name] = objCopy(value);
@@ -76,8 +76,11 @@ function init(bunyan) {
 		return formattedMessage;
 	}
 
+	function createOptions(options){
+		return options ? objCopy(options) : { messageTemplate: undefined }
+	}
+
 	function wrap(logger, options) {
-		options = options ? objCopy(options) : { messageTemplate: undefined };
 		function wrapLogMethod(logMethod) {
 			function log() {
 				if (arguments.length === 0) return logMethod.apply(logger)
@@ -142,6 +145,7 @@ function init(bunyan) {
 		newLogger.error = wrapLogMethod(logger.error);
 		newLogger.fatal = wrapLogMethod(logger.fatal);
 		newLogger.fmt = fmt
+		newLogger.child = function () { return wrap(logger.child.apply(logger, arguments), options) }
 		newLogger.__proto__ = logger
 		return newLogger;
 	}
@@ -150,10 +154,10 @@ function init(bunyan) {
 			optionalBunyanLoggerOptions = { name: optionalBunyanLoggerOptions }
 		}
 		var log = bunyan.createLogger(optionalBunyanLoggerOptions);
-		return wrap(log, optionalBunyanSlogOptions);
+		return wrap(log, createOptions(optionalBunyanSlogOptions));
 	}
 	return {
-		wrapExisting: wrap,
+		wrapExisting: (logger,options)=>wrap(logger,createOptions(options)),
 		createLogger: createLogger,
 		stdSerializers: bunyan.stdSerializers,
 		TRACE: bunyan.TRACE,
