@@ -125,7 +125,8 @@ function init(bunyan) {
 						message = format(fields, fmtObj.msg, args2, 0, options);
 					} else {
 						// `log.<level>(fields, msg, ...)`
-						fields = arg
+						// `log.<level>(null, msg, ...)`
+						fields = arg || {}
 						message = format(fields, args[currentIndex + 1], args, currentIndex + 2, options);
 					}
 				}

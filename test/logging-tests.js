@@ -99,6 +99,14 @@ suite('Logging', () => {
 			done()
 		})
 
+		test('info(null, "hi") (and similar) should reat null as {} and log',{only:1}, done => {
+
+			testLevels(null, "hi", rec=> {
+				rec.should.have.property('msg', 'hi')
+			})
+			done()
+		})
+
 		test('info(err) (and similar) should log', done => {
 			testLevels(new Error('hi'), rec=> {
 				rec.should.have.property('msg', 'hi')
